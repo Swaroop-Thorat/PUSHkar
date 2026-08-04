@@ -41,7 +41,7 @@ your-github-repo/
 
 1. **Clone this repo:**
    ```bash
-   git clone https://github.com/swaroop/pushkar
+   git clone https://github.com/Swaroop-Thorat/PUSHkar.git
    ```
 
 2. **Install dependencies:**

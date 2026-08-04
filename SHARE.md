@@ -12,7 +12,7 @@ to your GitHub repo — organized by platform and topic.
 
 ### Step 1: Clone the repo
 ```bash
-git clone https://github.com/swaroop/pushkar.git
+git clone https://github.com/Swaroop-Thorat/PUSHkar.git
 cd pushkar
 ```
 
