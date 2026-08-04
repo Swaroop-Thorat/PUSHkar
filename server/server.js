@@ -1,18 +1,14 @@
 const path = require('path');
 const dotenv = require('dotenv');
 const result = dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
-if (result.error) {
-  console.error('Failed to load .env:', result.error);
-} else {
-  console.log('Token loaded successfully, length:', process.env.GITHUB_TOKEN?.length);
-}
+
 
 const express = require('express');
 const cors = require('cors');
 const { Octokit } = require('octokit');
 
 const app = express();
-const PORT = 3000;
+const PORT = 8000;
 
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));

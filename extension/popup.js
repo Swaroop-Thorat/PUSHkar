@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     statusMsg.classList.add('hidden');
 
     try {
-      const response = await fetch('http://localhost:3000/push', {
+      const response = await fetch('http://localhost:8000/push', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(extractedData)

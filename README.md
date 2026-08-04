@@ -62,9 +62,9 @@ your-github-repo/
 
 4. **Start the local server:**
    ```bash
-   node server/server.js
+   npm start
    ```
-   → You should see: `"PUSHkar server running on port 3000 ⚡"`
+   → You should see: `"PUSHkar server running on port 8000 ⚡"`
 
 5. **Load the extension in Chrome:**
    → Open: `chrome://extensions/`

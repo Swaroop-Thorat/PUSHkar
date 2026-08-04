@@ -60,6 +60,6 @@
     "*://*.codechef.com/submit/*",
     "*://*.hackerrank.com/challenges/*",
     "*://*.hackerrank.com/challenges/*/submissions/*",
-    "http://localhost:3000/*"
+    "http://localhost:8000/*"
   ]
 }
