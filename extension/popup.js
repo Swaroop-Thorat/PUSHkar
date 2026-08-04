@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         showStatus(result.error || "Failed to push.", "error");
       }
     } catch (e) {
-      showStatus("PUSHkar server not running! Start it with: node server/server.js", "error");
+      showStatus("PUSHkar server not running! Start it with: npm start", "error");
     } finally {
       pushBtn.innerText = "PUSH TO GITHUB ⚡";
       pushBtn.disabled = false;

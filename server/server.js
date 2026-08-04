@@ -116,16 +116,28 @@ app.post('/push', async (req, res) => {
       }
     }
 
-    if (!currentReadme.includes("| Problem |")) {
-      currentReadme += "\n\n| # | Problem | Platform | Topic | Difficulty | Language |\n|---|---------|----------|-------|------------|----------|\n";
+    let lines = currentReadme.split('\n');
+    let existingRowIndex = -1;
+    const problemStr = `${problemNumber ? problemNumber + '. ' : ''}${problemName}`;
+    
+    for (let i = 0; i < lines.length; i++) {
+       if (lines[i].includes(`| ${problemStr} |`) && lines[i].includes(`| ${platform} |`)) {
+           existingRowIndex = i;
+           break;
+       }
     }
 
-    const tableLines = currentReadme.split('\n').filter(line => line.trim().startsWith('|') && !line.includes('---|---'));
-    const count = Math.max(1, tableLines.length); 
+    let count = Math.max(1, lines.filter(line => line.trim().startsWith('|') && !line.includes('---|---') && !line.includes('| Problem |')).length + 1);
 
-    const newRow = `| ${count} | ${problemNumber ? problemNumber + '. ' : ''}${problemName} | ${platform} | ${topic || 'N/A'} | ${difficulty || 'N/A'} | ${language || 'N/A'} |`;
-    
-    const updatedReadme = currentReadme.trim() + '\n' + newRow + '\n';
+    if (existingRowIndex !== -1) {
+       const rowMatch = lines[existingRowIndex].match(/^\|\s*(\d+)\s*\|/);
+       if (rowMatch) count = rowMatch[1];
+       lines[existingRowIndex] = `| ${count} | ${problemStr} | ${platform} | ${topic || 'N/A'} | ${difficulty || 'N/A'} | ${language || 'N/A'} |`;
+    } else {
+       lines.push(`| ${count} | ${problemStr} | ${platform} | ${topic || 'N/A'} | ${difficulty || 'N/A'} | ${language || 'N/A'} |`);
+    }
+
+    const updatedReadme = lines.join('\n').trim() + '\n';
 
     await octokit.rest.repos.createOrUpdateFileContents({
       owner: GITHUB_USERNAME,
@@ -140,7 +152,11 @@ app.post('/push', async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, error: error.message });
+    let errorMsg = error.message;
+    if (error.status === 401) {
+      errorMsg = "GitHub authentication failed. Check your token in server/.env";
+    }
+    res.status(500).json({ success: false, error: errorMsg });
   }
 });
 
