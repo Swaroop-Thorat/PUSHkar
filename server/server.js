@@ -1,4 +1,12 @@
-require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+const path = require('path');
+const dotenv = require('dotenv');
+const result = dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
+if (result.error) {
+  console.error('Failed to load .env:', result.error);
+} else {
+  console.log('Token loaded successfully, length:', process.env.GITHUB_TOKEN?.length);
+}
+
 const express = require('express');
 const cors = require('cors');
 const { Octokit } = require('octokit');
@@ -13,7 +21,6 @@ const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
 const REPO_NAME = process.env.REPO_NAME;
 const COMMIT_MESSAGE = "Pushed via PUSHkar by Swaroop";
-
 const langExtMap = {
   python: 'py',
   python3: 'py',
