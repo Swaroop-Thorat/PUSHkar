@@ -268,6 +268,79 @@ function extractData() {
 const initialDelay = location.href.includes('/submissions/') ? 2500 : 1500;
 setTimeout(extractData, initialDelay);
 
+// Detect submission on each platform
+function detectSubmission() {
+  const hostname = window.location.hostname;
+
+  if (hostname.includes("leetcode.com")) {
+    const submitBtn = document.querySelector('button[data-e2e-locator="console-submit-button"]');
+    if (submitBtn && !submitBtn.dataset.pushkarListening) {
+      submitBtn.dataset.pushkarListening = "true";
+      submitBtn.addEventListener("click", () => {
+        setTimeout(() => {
+          extractData();
+          chrome.runtime.sendMessage({ action: "showBadge" });
+        }, 3000);
+      });
+    }
+  }
+
+  if (hostname.includes("geeksforgeeks.org")) {
+    const submitBtn = document.querySelector('button.submit-btn, button[class*="submit"]');
+    if (submitBtn && !submitBtn.dataset.pushkarListening) {
+      submitBtn.dataset.pushkarListening = "true";
+      submitBtn.addEventListener("click", () => {
+        setTimeout(() => {
+          extractData();
+          chrome.runtime.sendMessage({ action: "showBadge" });
+        }, 3000);
+      });
+    }
+  }
+
+  if (hostname.includes("codeforces.com")) {
+    const submitBtn = document.querySelector('input[value="Submit"], button.submit');
+    if (submitBtn && !submitBtn.dataset.pushkarListening) {
+      submitBtn.dataset.pushkarListening = "true";
+      submitBtn.addEventListener("click", () => {
+        setTimeout(() => {
+          extractData();
+          chrome.runtime.sendMessage({ action: "showBadge" });
+        }, 3000);
+      });
+    }
+  }
+
+  if (hostname.includes("codechef.com")) {
+    const submitBtn = document.querySelector('button[type="submit"], button.submit-button');
+    if (submitBtn && !submitBtn.dataset.pushkarListening) {
+      submitBtn.dataset.pushkarListening = "true";
+      submitBtn.addEventListener("click", () => {
+        setTimeout(() => {
+          extractData();
+          chrome.runtime.sendMessage({ action: "showBadge" });
+        }, 3000);
+      });
+    }
+  }
+
+  if (hostname.includes("hackerrank.com")) {
+    const submitBtn = document.querySelector('button.hr-monaco-submit, button[data-attr="submit"]');
+    if (submitBtn && !submitBtn.dataset.pushkarListening) {
+      submitBtn.dataset.pushkarListening = "true";
+      submitBtn.addEventListener("click", () => {
+        setTimeout(() => {
+          extractData();
+          chrome.runtime.sendMessage({ action: "showBadge" });
+        }, 3000);
+      });
+    }
+  }
+}
+
+// Run detectSubmission after page loads
+setTimeout(detectSubmission, 2000);
+
 // Re-run if URL changes (for SPAs)
 let lastUrl = location.href;
 new MutationObserver(() => {
@@ -276,5 +349,6 @@ new MutationObserver(() => {
     lastUrl = url;
     const delay = location.href.includes('/submissions/') ? 2500 : 1500;
     setTimeout(extractData, delay);
+    setTimeout(detectSubmission, delay + 500);
   }
 }).observe(document.body, { childList: true, subtree: true });

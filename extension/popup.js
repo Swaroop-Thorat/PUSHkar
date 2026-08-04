@@ -3,6 +3,13 @@
 let extractedData = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Clear badge when popup opens
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs[0]) {
+      chrome.action.setBadgeText({ text: "", tabId: tabs[0].id });
+    }
+  });
+
   const platformBadge = document.getElementById('platform-badge');
   const difficultyBadge = document.getElementById('difficulty-badge');
   const languageBadge = document.getElementById('language-badge');
