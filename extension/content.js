@@ -93,8 +93,12 @@ function extractGeeksForGeeks() {
     const diffEl = document.querySelector('.difficulty-block, span[class*="difficulty"]');
     if (diffEl) data.difficulty = diffEl.innerText.trim();
     
-    const tagEls = document.querySelectorAll('.problem-tags a, .article-tags a');
-    tagEls.forEach(tag => data.allTags.push(tag.innerText.trim()));
+    const tagEls = document.querySelectorAll('.problems_tag_label__A4Ism');
+    tagEls.forEach(tag => {
+      if (tag.href && tag.href.includes('/explore?category')) {
+        data.allTags.push(tag.innerText.trim());
+      }
+    });
     if (data.allTags.length > 0) data.topic = data.allTags[0];
     
     const langSelect = document.querySelector('.divider.text, .language-selector, .monaco-editor'); 
