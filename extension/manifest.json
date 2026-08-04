@@ -19,11 +19,18 @@
   "content_scripts": [
     {
       "matches": [
-        "*://*.leetcode.com/*",
-        "*://*.geeksforgeeks.org/*",
-        "*://*.codeforces.com/*",
-        "*://*.codechef.com/*",
-        "*://*.hackerrank.com/*"
+        "*://*.leetcode.com/problems/*",
+        "*://*.leetcode.com/problems/*/submissions/*",
+        "*://*.leetcode.com/problems/*/submissions/*/",
+        "*://*.geeksforgeeks.org/problems/*",
+        "*://*.geeksforgeeks.org/problems/*/submissions/*",
+        "*://*.codeforces.com/problemset/problem/*/*",
+        "*://*.codeforces.com/contest/*/problem/*",
+        "*://*.codeforces.com/contest/*/submission/*",
+        "*://*.codechef.com/problems/*",
+        "*://*.codechef.com/submit/*",
+        "*://*.hackerrank.com/challenges/*",
+        "*://*.hackerrank.com/challenges/*/submissions/*"
       ],
       "js": ["content.js"],
       "run_at": "document_idle"
@@ -37,11 +44,18 @@
   ],
 
   "host_permissions": [
-    "*://*.leetcode.com/*",
-    "*://*.geeksforgeeks.org/*",
-    "*://*.codeforces.com/*",
-    "*://*.codechef.com/*",
-    "*://*.hackerrank.com/*",
+    "*://*.leetcode.com/problems/*",
+    "*://*.leetcode.com/problems/*/submissions/*",
+    "*://*.leetcode.com/problems/*/submissions/*/",
+    "*://*.geeksforgeeks.org/problems/*",
+    "*://*.geeksforgeeks.org/problems/*/submissions/*",
+    "*://*.codeforces.com/problemset/problem/*/*",
+    "*://*.codeforces.com/contest/*/problem/*",
+    "*://*.codeforces.com/contest/*/submission/*",
+    "*://*.codechef.com/problems/*",
+    "*://*.codechef.com/submit/*",
+    "*://*.hackerrank.com/challenges/*",
+    "*://*.hackerrank.com/challenges/*/submissions/*",
     "http://localhost:3000/*"
   ]
 }

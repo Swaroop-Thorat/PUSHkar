@@ -3,6 +3,28 @@
 function extractLeetCode() {
   let data = { platform: "LeetCode", problemNumber: "", problemName: "", topic: "", allTags: [], difficulty: "", language: "", problemStatement: "" };
   try {
+    // Try getting problem name from page title
+    if (!data.problemName) {
+      const pageTitle = document.title;
+      // Format: "Rotate List - LeetCode"
+      const titleMatch = pageTitle.match(/^(.+?)\s*-\s*LeetCode/i);
+      if (titleMatch) {
+        data.problemName = titleMatch[1].trim();
+      }
+    }
+
+    // Try getting problem number from breadcrumb
+    if (!data.problemNumber) {
+      const breadcrumb = document.querySelector('a[href*="/problems/"]');
+      if (breadcrumb) {
+        const slug = breadcrumb.href.split('/problems/')[1]?.split('/')[0];
+        if (slug) {
+          // slug is already sanitized (rotate-list)
+          // problem number not available here so leave empty
+        }
+      }
+    }
+
     const titleElement = document.querySelector('[data-cy="question-title"]') || document.querySelector('div.text-title-large a') || document.querySelector('.text-title-large');
     if (titleElement) {
       const fullTitle = titleElement.innerText.trim();
@@ -18,7 +40,9 @@ function extractLeetCode() {
        const pathParts = window.location.pathname.split('/');
        if (pathParts.includes('problems')) {
          const idx = pathParts.indexOf('problems');
-         if (pathParts[idx+1]) data.problemName = data.problemName || pathParts[idx+1].split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+         if (pathParts[idx+1] && pathParts[idx+1] !== 'submissions') {
+           data.problemName = data.problemName || pathParts[idx+1].split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+         }
        }
     }
 
@@ -50,6 +74,22 @@ function extractGeeksForGeeks() {
     const titleEl = document.querySelector('h1.problems-heading, h3');
     if (titleEl) data.problemName = titleEl.innerText.trim();
     
+    if (!data.problemName) {
+      const pageTitle = document.title;
+      const titleMatch = pageTitle.match(/^(.+?)\s*\|\s*GeeksforGeeks/i) || pageTitle.match(/^(.+?)\s*-\s*GeeksforGeeks/i);
+      if (titleMatch) data.problemName = titleMatch[1].trim();
+    }
+    
+    if (!data.problemName) {
+      const pathParts = window.location.pathname.split('/');
+      if (pathParts.includes('problems')) {
+        const idx = pathParts.indexOf('problems');
+        if (pathParts[idx+1] && pathParts[idx+1] !== 'submissions') {
+          data.problemName = pathParts[idx+1].split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+      }
+    }
+
     const diffEl = document.querySelector('.difficulty-block, span[class*="difficulty"]');
     if (diffEl) data.difficulty = diffEl.innerText.trim();
     
@@ -57,7 +97,7 @@ function extractGeeksForGeeks() {
     tagEls.forEach(tag => data.allTags.push(tag.innerText.trim()));
     if (data.allTags.length > 0) data.topic = data.allTags[0];
     
-    const langSelect = document.querySelector('.divider.text, .language-selector, .monaco-editor'); // Fallback for languages
+    const langSelect = document.querySelector('.divider.text, .language-selector, .monaco-editor'); 
     if (langSelect) data.language = langSelect.innerText.trim();
     
     const statement = document.querySelector('.problems-body, .problem-statement, div[class*="problem_content"]');
@@ -83,15 +123,22 @@ function extractCodeforces() {
       }
     }
     if (!data.problemNumber) {
-      const match = window.location.pathname.match(/\/(?:problemset\/problem|contest)\/(\d+)(?:\/problem)?\/([A-Z0-9]+)/i);
-      if (match) data.problemNumber = match[1] + match[2];
+      const match = window.location.pathname.match(/\/(?:problemset\/problem|contest)\/(\d+)(?:\/problem|\/submission)?(?:\/([A-Z0-9]+))?/i);
+      if (match && match[1]) {
+        data.problemNumber = match[1] + (match[2] || '');
+      }
+    }
+    if (!data.problemName) {
+      const pageTitle = document.title;
+      const titleMatch = pageTitle.match(/^(.+?)\s*-\s*Codeforces/i);
+      if (titleMatch) data.problemName = titleMatch[1].trim();
     }
 
     const tagEls = document.querySelectorAll('span.tag-box');
     tagEls.forEach(tag => data.allTags.push(tag.innerText.trim()));
     if (data.allTags.length > 0) data.topic = data.allTags[0];
     
-    const langSelect = document.querySelector('select[name="programTypeId"] option:checked');
+    const langSelect = document.querySelector('select[name="programTypeId"] option:checked') || document.querySelector('td:nth-child(4)'); // Some submission pages show lang in table
     if (langSelect) data.language = langSelect.innerText.trim();
     
     const statement = document.querySelector('div.problem-statement');
@@ -108,9 +155,18 @@ function extractCodeChef() {
     const titleEl = document.querySelector('h1.problem-title, h1');
     if (titleEl) data.problemName = titleEl.innerText.trim();
     
+    if (!data.problemName) {
+      const pageTitle = document.title;
+      const titleMatch = pageTitle.match(/^(.+?)\s*\|\s*CodeChef/i);
+      if (titleMatch) data.problemName = titleMatch[1].trim();
+    }
+
     const urlParts = window.location.pathname.split('/');
-    if (urlParts.length > 2 && urlParts[1] === 'problems') {
+    if (urlParts.length > 2 && (urlParts[1] === 'problems' || urlParts[1] === 'submit')) {
       data.problemNumber = urlParts[2];
+      if (!data.problemName && data.problemNumber) {
+         data.problemName = data.problemNumber;
+      }
     }
     
     const diffEl = document.querySelector('.difficulty-badge, span[class*="difficulty"]');
@@ -137,10 +193,21 @@ function extractHackerRank() {
     const titleEl = document.querySelector('h1.ui-icon-label, h1.challenge-title');
     if (titleEl) data.problemName = titleEl.innerText.trim();
     
+    if (!data.problemName) {
+      const pageTitle = document.title;
+      const titleMatch = pageTitle.match(/^(.+?)\s*\|\s*HackerRank/i) || pageTitle.match(/^(.+?)\s*-\s*HackerRank/i);
+      if (titleMatch) data.problemName = titleMatch[1].trim();
+    }
+
     const urlParts = window.location.pathname.split('/');
     if (urlParts.includes('challenges')) {
       const idx = urlParts.indexOf('challenges');
-      if (urlParts[idx+1]) data.problemNumber = urlParts[idx+1];
+      if (urlParts[idx+1] && urlParts[idx+1] !== 'submissions') {
+        data.problemNumber = urlParts[idx+1];
+        if (!data.problemName) {
+          data.problemName = data.problemNumber.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+      }
     }
     
     const diffEl = document.querySelector('div.difficulty-block, span.difficulty');
@@ -177,6 +244,19 @@ function extractData() {
     data = extractHackerRank();
   }
 
+  if (data && !data.problemName) {
+    const title = document.title;
+    // Remove platform suffix
+    const cleaned = title
+      .replace(/\s*[-|]\s*LeetCode\s*$/i, '')
+      .replace(/\s*[-|]\s*GeeksforGeeks\s*$/i, '')
+      .replace(/\s*[-|]\s*Codeforces\s*$/i, '')
+      .replace(/\s*[-|]\s*CodeChef\s*$/i, '')
+      .replace(/\s*[-|]\s*HackerRank\s*$/i, '')
+      .trim();
+    if (cleaned) data.problemName = cleaned;
+  }
+
   if (data) {
     chrome.storage.local.set({ pushkar_data: data }, () => {
       console.log("PUSHkar: Data extracted ⚡");
@@ -185,7 +265,8 @@ function extractData() {
 }
 
 // Initial extraction (with slight delay for JS rendered apps)
-setTimeout(extractData, 1500);
+const initialDelay = location.href.includes('/submissions/') ? 2500 : 1500;
+setTimeout(extractData, initialDelay);
 
 // Re-run if URL changes (for SPAs)
 let lastUrl = location.href;
@@ -193,6 +274,7 @@ new MutationObserver(() => {
   const url = location.href;
   if (url !== lastUrl) {
     lastUrl = url;
-    setTimeout(extractData, 1500);
+    const delay = location.href.includes('/submissions/') ? 2500 : 1500;
+    setTimeout(extractData, delay);
   }
 }).observe(document.body, { childList: true, subtree: true });
