@@ -1,0 +1,227 @@
+/* Neubrutalism Variables */
+:root {
+  --bg-color: #FFEE00;
+  --border-color: #000000;
+  --text-color: #000000;
+  --shadow-color: #000000;
+  --border-width: 2px;
+  --shadow-offset: 4px;
+  --white: #FFFFFF;
+  
+  --easy-color: #4ADE80;
+  --medium-color: #FB923C;
+  --hard-color: #F87171;
+  --platform-color: #A78BFA;
+  --lang-color: #60A5FA;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 380px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+}
+
+header {
+  border-bottom: var(--border-width) solid var(--border-color);
+  padding: 16px;
+  text-align: center;
+  background-color: var(--white);
+}
+
+header h1 {
+  font-size: 28px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+header p {
+  font-size: 14px;
+}
+
+main {
+  padding: 20px 16px;
+}
+
+.info-section {
+  margin-bottom: 24px;
+}
+
+.badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.badge {
+  padding: 4px 10px;
+  font-size: 12px;
+  text-transform: uppercase;
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: 2px 2px 0px var(--shadow-color);
+  background-color: var(--white);
+}
+
+.diff-badge.easy { background-color: var(--easy-color); }
+.diff-badge.medium { background-color: var(--medium-color); }
+.diff-badge.hard { background-color: var(--hard-color); }
+
+.platform-badge { background-color: var(--platform-color); }
+.lang-badge { background-color: var(--lang-color); }
+
+.problem-name {
+  font-size: 18px;
+  background-color: var(--white);
+  padding: 10px 12px;
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--shadow-color);
+}
+
+.input-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  font-size: 16px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.input-group input,
+.input-group textarea {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-color);
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--shadow-color);
+  padding: 12px;
+  outline: none;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.input-group input {
+  background-color: var(--bg-color);
+}
+
+.input-group textarea {
+  background-color: var(--white);
+  height: 150px;
+  resize: vertical;
+  font-family: monospace;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--shadow-color);
+}
+
+button {
+  width: 100%;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  text-transform: uppercase;
+  color: var(--bg-color);
+  background-color: var(--text-color);
+  border: var(--border-width) solid var(--border-color);
+  padding: 16px;
+  cursor: pointer;
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--bg-color);
+  transition: all 0.1s ease;
+  margin-top: 4px;
+}
+
+button:hover {
+  transform: translate(var(--shadow-offset), var(--shadow-offset));
+  box-shadow: 0px 0px 0px transparent;
+}
+
+.status {
+  margin-top: 24px;
+  padding: 14px;
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--shadow-color);
+  font-size: 16px;
+  text-align: center;
+}
+
+.status.hidden {
+  display: none;
+}
+
+.status.success {
+  background-color: var(--easy-color);
+}
+
+.status.error {
+  background-color: var(--hard-color);
+}
+
+footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 12px;
+  border-top: var(--border-width) solid var(--border-color);
+  background-color: var(--white);
+}
+
+/* Appended Styles for Step 6 */
+.char-count {
+  font-size: 12px;
+  color: var(--text-color);
+  text-align: right;
+  margin-top: 4px;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tag-chip {
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: var(--border-width) solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  cursor: pointer;
+  box-shadow: 2px 2px 0px var(--shadow-color);
+  transition: all 0.1s ease;
+}
+
+.tag-chip:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px transparent;
+}
+
+.tag-chip.active {
+  background-color: var(--text-color);
+  color: var(--bg-color);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+  border-color: var(--hard-color) !important;
+}

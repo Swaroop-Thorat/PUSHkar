@@ -1,0 +1,149 @@
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+const express = require('express');
+const cors = require('cors');
+const { Octokit } = require('octokit');
+
+const app = express();
+const PORT = 3000;
+
+app.use(cors());
+app.use(express.json({ limit: '10mb' }));
+
+const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
+const REPO_NAME = process.env.REPO_NAME;
+const COMMIT_MESSAGE = "Pushed via PUSHkar by Swaroop";
+
+const langExtMap = {
+  python: 'py',
+  python3: 'py',
+  javascript: 'js',
+  java: 'java',
+  cpp: 'cpp',
+  'c++': 'cpp',
+  c: 'c',
+  csharp: 'cs',
+  'c#': 'cs',
+  ruby: 'rb',
+  go: 'go',
+  rust: 'rs',
+  typescript: 'ts',
+  php: 'php',
+  swift: 'swift',
+  kotlin: 'kt',
+  dart: 'dart',
+  mysql: 'sql',
+  oracle: 'sql',
+  mssql: 'sql'
+};
+
+async function pushFile(path, content) {
+  let sha;
+  try {
+    const { data } = await octokit.rest.repos.getContent({
+      owner: GITHUB_USERNAME,
+      repo: REPO_NAME,
+      path: path,
+    });
+    sha = data.sha;
+  } catch (error) {
+    if (error.status !== 404) {
+      throw error;
+    }
+  }
+
+  await octokit.rest.repos.createOrUpdateFileContents({
+    owner: GITHUB_USERNAME,
+    repo: REPO_NAME,
+    path: path,
+    message: COMMIT_MESSAGE,
+    content: Buffer.from(content).toString('base64'),
+    ...(sha && { sha })
+  });
+}
+
+app.get('/health', (req, res) => {
+  res.json({ status: "PUSHkar is alive ⚡" });
+});
+
+app.post('/push', async (req, res) => {
+  try {
+    const {
+      platform,
+      problemName,
+      problemNumber,
+      topic,
+      difficulty,
+      language,
+      code,
+      problemStatement
+    } = req.body;
+
+    if (!platform || !problemName || !code) {
+      return res.status(400).json({ success: false, error: "Missing required fields" });
+    }
+
+    const sanitizedProblemName = problemName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const ext = langExtMap[language?.toLowerCase()] || 'txt';
+
+    const codePath = `${platform}/${topic || 'Uncategorized'}/${sanitizedProblemName}/solution.${ext}`;
+    const problemPath = `${platform}/${topic || 'Uncategorized'}/${sanitizedProblemName}/problem.md`;
+
+    const problemMdContent = `# ${problemNumber ? problemNumber + '. ' : ''}${problemName}\n**Platform:** ${platform}\n**Difficulty:** ${difficulty || 'N/A'}\n**Topic:** ${topic || 'N/A'}\n\n## Problem Statement\n${problemStatement || 'N/A'}`;
+
+    // 1. Push Code
+    await pushFile(codePath, code);
+
+    // 2. Push Problem Statement
+    await pushFile(problemPath, problemMdContent);
+
+    // 3. Update README.md
+    let currentReadme = "";
+    let readmeSha;
+    try {
+      const { data } = await octokit.rest.repos.getContent({
+        owner: GITHUB_USERNAME,
+        repo: REPO_NAME,
+        path: "README.md",
+      });
+      readmeSha = data.sha;
+      currentReadme = Buffer.from(data.content, 'base64').toString('utf-8');
+    } catch (error) {
+      if (error.status === 404) {
+        currentReadme = "# PUSHkar Solutions\n\n| # | Problem | Platform | Topic | Difficulty | Language |\n|---|---------|----------|-------|------------|----------|\n";
+      } else {
+        throw error;
+      }
+    }
+
+    if (!currentReadme.includes("| Problem |")) {
+      currentReadme += "\n\n| # | Problem | Platform | Topic | Difficulty | Language |\n|---|---------|----------|-------|------------|----------|\n";
+    }
+
+    const tableLines = currentReadme.split('\n').filter(line => line.trim().startsWith('|') && !line.includes('---|---'));
+    const count = Math.max(1, tableLines.length); 
+
+    const newRow = `| ${count} | ${problemNumber ? problemNumber + '. ' : ''}${problemName} | ${platform} | ${topic || 'N/A'} | ${difficulty || 'N/A'} | ${language || 'N/A'} |`;
+    
+    const updatedReadme = currentReadme.trim() + '\n' + newRow + '\n';
+
+    await octokit.rest.repos.createOrUpdateFileContents({
+      owner: GITHUB_USERNAME,
+      repo: REPO_NAME,
+      path: "README.md",
+      message: COMMIT_MESSAGE,
+      content: Buffer.from(updatedReadme).toString('base64'),
+      ...(readmeSha && { sha: readmeSha })
+    });
+
+    res.json({ success: true, message: "Pushed successfully ⚡" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`PUSHkar server running on port ${PORT} ⚡`);
+});

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PUSHkar ⚡</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <h1>PUSHkar ⚡</h1>
+    <p>Solve it. PUSHkar.</p>
+  </header>
+
+  <main>
+    <section class="info-section">
+      <div class="badges">
+        <span class="badge platform-badge" id="platform-badge">LeetCode</span>
+        <span class="badge diff-badge easy" id="difficulty-badge">Easy</span>
+        <span class="badge lang-badge" id="language-badge">Python</span>
+      </div>
+      <div class="problem-name" id="problem-name">1. Two Sum</div>
+    </section>
+
+    <section class="form-section">
+      <div class="input-group">
+        <label for="topic-input">TOPIC</label>
+        <input type="text" id="topic-input" value="Arrays">
+      </div>
+
+      <div class="input-group">
+        <label for="code-input">YOUR SOLUTION</label>
+        <textarea id="code-input" placeholder="Paste your solution here..."></textarea>
+      </div>
+
+      <button id="push-btn">PUSH TO GITHUB ⚡</button>
+    </section>
+
+    <div id="status-message" class="status hidden">
+      <!-- Success/Error message will appear here -->
+    </div>
+  </main>
+
+  <footer>
+    Built by Swaroop ⚡
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
