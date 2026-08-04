@@ -36,6 +36,15 @@ echo.
 echo Registering scheduled task to run on login...
 schtasks /create /tn "PushkarServer" /tr "wscript.exe \"%VBS_PATH%\"" /sc onlogon /f
 
+if %errorlevel% neq 0 (
+    echo.
+    echo [ERROR] Failed to register scheduled task.
+    echo Please right-click setup.bat and select "Run as administrator".
+    echo.
+    pause
+    exit /b 1
+)
+
 echo.
 echo ========================================================
 echo [SUCCESS] Setup complete! 
