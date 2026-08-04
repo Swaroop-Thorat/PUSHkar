@@ -9,8 +9,12 @@ A Chrome Extension that automatically pushes your coding solutions to GitHub —
 - **Platforms:** LeetCode | GFG | Codeforces | CodeChef | HackerRank
 - **Status:** Active
 
+---
+
 ### What is PUSHkar?
 PUSHkar is a streamlined tool that connects a local Chrome Extension to a local Express server. As you solve coding problems across various competitive programming platforms, the extension automatically extracts the problem details (platform, name, difficulty, topic tags, language, and the full problem statement). With a single click, it securely pushes both your solution code and the problem statement directly to your GitHub repository. It keeps your repository perfectly organized, searchable, and self-contained without needing databases or cloud deployments!
+
+---
 
 ### Features
 - Auto-detects platform, problem name, topic, difficulty, language
@@ -19,7 +23,10 @@ PUSHkar is a streamlined tool that connects a local Chrome Extension to a local 
 - Auto-updates README index table on every push
 - Commit watermark: "Pushed via PUSHkar by Swaroop ⚡"
 - 100% free, runs locally, no deployment needed
+- **Server auto-starts on boot — no terminal needed after setup**
 - Neubrutalism UI
+
+---
 
 ### Repo Structure (after using PUSHkar)
 ```text
@@ -37,44 +44,75 @@ your-github-repo/
 └── README.md  ← auto-updated index
 ```
 
+---
+
 ### Setup Instructions
 
-1. **Clone this repo:**
-   ```bash
-   git clone https://github.com/Swaroop-Thorat/PUSHkar.git
-   ```
+#### Prerequisites
+- [Node.js](https://nodejs.org/) installed
+- A GitHub account + Personal Access Token ([how to get one](https://github.com/settings/tokens) → select `repo` scope)
 
-2. **Install dependencies:**
-   ```bash
-   cd pushkar
-   npm install
-   ```
+---
 
-3. **Add your GitHub details in `server/.env`:**
-   ```env
-   GITHUB_TOKEN=your_github_personal_access_token
-   GITHUB_USERNAME=your_github_username
-   REPO_NAME=your_repo_name
-   ```
-   **→ How to get a GitHub token:**
-   GitHub → Settings → Developer Settings → Personal Access Tokens → Generate New Token
-   → Select scopes: `repo` (full control)
+#### Step 1 — Clone this repo
+```bash
+git clone https://github.com/Swaroop-Thorat/PUSHkar.git
+cd pushkar
+```
 
-4. **Start the local server:**
-   ```bash
-   npm start
-   ```
-   → You should see: `"PUSHkar server running on port 8000 ⚡"`
+---
 
-5. **Load the extension in Chrome:**
-   → Open: `chrome://extensions/`
-   → Enable: **Developer Mode** (top right toggle)
-   → Click: **Load Unpacked**
-   → Select: the `/extension` folder
-   → PUSHkar icon appears in toolbar ✅
+#### Step 2 — Configure GitHub credentials
+```bash
+node setup.js
+```
+Enter your GitHub token, username, and repo name when prompted.
+This creates `server/.env` automatically — never share or commit this file.
 
-6. Go to any supported platform, open a problem, solve it.
-7. Click PUSHkar icon → paste code → click **PUSH ⚡**
+---
+
+#### Step 3 — Register auto-start (run once)
+
+**Windows** — right-click and **Run as administrator:**
+```bash
+.\setup.bat
+```
+
+**Mac/Linux:**
+```bash
+chmod +x setup.sh && ./setup.sh
+```
+
+This registers the server to start automatically in the background on every login. **No terminal needed after this.**
+
+> ⚠️ On Windows, `setup.bat` must be run as Administrator or it will fail.
+
+---
+
+#### Step 4 — Reboot your PC
+
+After reboot, the server starts automatically. Verify by opening:
+```
+http://localhost:8000
+```
+If you see anything (even `Cannot GET /`) → ✅ Server is running.
+
+---
+
+#### Step 5 — Load the extension in Chrome
+- Open: `chrome://extensions/`
+- Enable: **Developer Mode** (top right toggle)
+- Click: **Load Unpacked**
+- Select: the `/extension` folder
+- PUSHkar icon appears in toolbar ✅
+
+---
+
+#### Step 6 — Start pushing!
+Go to any supported platform, open a problem, solve it.
+Click PUSHkar icon → paste code → click **PUSH ⚡**
+
+---
 
 ### Supported Platforms
 | Platform | Auto-detect | Problem Statement | Tags |
@@ -85,23 +123,32 @@ your-github-repo/
 | CodeChef | ✅ | ✅ | ✅ |
 | HackerRank | ✅ | ✅ | ✅ |
 
+---
+
 ### Solutions Index
 (This section is auto-updated by PUSHkar on every push)
 
 | # | Problem | Platform | Topic | Difficulty | Language |
 |---|---------|----------|-------|------------|----------|
 
+---
+
 ### Important Notes
-- Keep server running (`node server/server.js`) while using extension
+- Server auto-starts on boot after setup — no need to run `npm start` manually
 - Never share your `.env` file — it contains your GitHub token
 - `.env` is already in `.gitignore` — safe to push this repo
+- If server ever stops responding, restart it: `npm start`
+
+---
 
 ### Built By
 PUSHkar is built and maintained by Swaroop ⚡
 Every commit pushed by this tool carries the watermark:
 "Pushed via PUSHkar by Swaroop ⚡"
 
-GitHub: [github.com/swaroop](https://github.com/swaroop)
+GitHub: [https://github.com/Swaroop-Thorat](https://github.com/Swaroop-Thorat)
+
+---
 
 ### License
 MIT License — free to use, but credit must be maintained.
