@@ -28,8 +28,10 @@ call npm install
 
 :: Create a VBScript to run the server silently in the background
 set "VBS_PATH=%PROJECT_DIR%\start_pushkar.vbs"
-echo Set WshShell = CreateObject("WScript.Shell") > "%VBS_PATH%"
-echo WshShell.Run "cmd.exe /c cd /d """"%PROJECT_DIR%"""" ^&^& npm start", 0, False >> "%VBS_PATH%"
+(
+    echo Set WshShell = CreateObject("WScript.Shell"^)
+    echo WshShell.Run "cmd.exe /c cd /d ""%PROJECT_DIR%"" ^&^& npm start", 0, False
+) > "%VBS_PATH%"
 
 :: Create a scheduled task to run on login
 echo.
