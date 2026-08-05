@@ -1,22 +1,29 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 
-echo Setting up Pushkar Server auto-start for Windows...
+echo Setting up PUSHkar Server auto-start for Windows...
 
 :: Check if Node.js is installed
 where node >nul 2>nul
 if %errorlevel% neq 0 (
     echo.
     echo [ERROR] Node.js is not installed or not in your PATH.
-    echo Please install Node.js from https://nodejs.org/ and try again.
-    echo.
-    pause
-    exit /b 1
+    echo Trying default install location...
+    if exist "C:\Program Files\nodejs\node.exe" (
+        set "NODE_EXE=C:\Program Files\nodejs\node.exe"
+    ) else (
+        echo Please install Node.js from https://nodejs.org/ and try again.
+        pause
+        exit /b 1
+    )
+) else (
+    for /f "tokens=*" %%i in ('where node') do set "NODE_EXE=%%i"
 )
 
-:: Get current directory (where setup.bat is located)
+echo Node.js found at: !NODE_EXE!
+
+:: Get current directory
 set "PROJECT_DIR=%~dp0"
-:: Remove trailing backslash for cleaner paths
 if "%PROJECT_DIR:~-1%"=="\" set "PROJECT_DIR=%PROJECT_DIR:~0,-1%"
 
 cd /d "%PROJECT_DIR%"
@@ -26,31 +33,37 @@ echo.
 echo Installing dependencies...
 call npm install
 
-:: Create a VBScript to run the server silently in the background
+:: Run setup.js for GitHub token
+echo.
+echo Running PUSHkar configuration...
+"!NODE_EXE!" setup.js
+
+:: Create VBS with full node path
 set "VBS_PATH=%PROJECT_DIR%\start_pushkar.vbs"
 (
-    echo Set WshShell = CreateObject("WScript.Shell"^)
-    echo WshShell.Run "cmd.exe /c cd /d ""%PROJECT_DIR%"" ^&^& npm start", 0, False
+    echo Set WshShell = CreateObject^("WScript.Shell"^)
+    echo WshShell.Run """!NODE_EXE!"" ""!PROJECT_DIR!\server\server.js""", 0, False
 ) > "%VBS_PATH%"
 
-:: Create a scheduled task to run on login
-echo.
-echo Registering scheduled task to run on login...
-schtasks /create /tn "PushkarServer" /tr "wscript.exe \"%VBS_PATH%\"" /sc onlogon /f
+:: Copy VBS to startup folder
+set "STARTUP=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
+copy /y "%VBS_PATH%" "%STARTUP%\start_pushkar.vbs"
 
 if %errorlevel% neq 0 (
     echo.
-    echo [ERROR] Failed to register scheduled task.
-    echo Please right-click setup.bat and select "Run as administrator".
-    echo.
+    echo [ERROR] Could not copy to startup folder.
+    echo Manually copy start_pushkar.vbs to:
+    echo %STARTUP%
     pause
     exit /b 1
 )
 
 echo.
 echo ========================================================
-echo [SUCCESS] Setup complete! 
-echo The Pushkar server will now auto-start in the background
-echo on port 8000 whenever you log into Windows.
+echo [SUCCESS] PUSHkar setup complete!
+echo Server will auto-start silently on every Windows login.
+echo.
+echo To test right now: double-click start_pushkar.vbs
+echo To verify running: open http://localhost:8000/health
 echo ========================================================
 pause
