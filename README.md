@@ -21,7 +21,7 @@ PUSHkar is a streamlined tool that connects a local Chrome Extension to a local 
 - Pushes solution code + problem statement together
 - Auto-organized repo structure: `Platform/Topic/problem-name/`
 - Auto-updates README index table on every push
-- Commit watermark: "Pushed via PUSHkar by Swaroop ⚡"
+- Commit watermark: "Pushed via PUSHkar⚡"
 - 100% free, runs locally, no deployment needed
 - **Server auto-starts on boot — no terminal needed after setup**
 - Neubrutalism UI
@@ -144,7 +144,7 @@ Click PUSHkar icon → paste code → click **PUSH ⚡**
 ### Built By
 PUSHkar is built and maintained by Swaroop ⚡
 Every commit pushed by this tool carries the watermark:
-"Pushed via PUSHkar by Swaroop ⚡"
+"Pushed via PUSHkar⚡"
 
 GitHub: [https://github.com/Swaroop-Thorat](https://github.com/Swaroop-Thorat)
 

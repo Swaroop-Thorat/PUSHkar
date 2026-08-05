@@ -16,7 +16,7 @@ app.use(express.json({ limit: '10mb' }));
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
 const REPO_NAME = process.env.REPO_NAME;
-const COMMIT_MESSAGE = "Pushed via PUSHkar by Swaroop";
+const COMMIT_MESSAGE = "Pushed via PUSHkar";
 const langExtMap = {
   python: 'py',
   python3: 'py',

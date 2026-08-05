@@ -71,4 +71,4 @@ your-repo/
 ```
 
 ## Built by Swaroop ⚡
-Every commit: "Pushed via PUSHkar by Swaroop ⚡"
+Every commit: "Pushed via PUSHkar⚡"
