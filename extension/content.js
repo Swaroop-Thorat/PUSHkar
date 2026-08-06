@@ -9,13 +9,6 @@ function extractLeetCode() {
       if (titleMatch) data.problemName = titleMatch[1].trim();
     }
 
-    if (!data.problemNumber) {
-      const breadcrumb = document.querySelector('a[href*="/problems/"]');
-      if (breadcrumb) {
-        const slug = breadcrumb.href.split('/problems/')[1]?.split('/')[0];
-      }
-    }
-
     const titleElement = document.querySelector('[data-cy="question-title"]') || document.querySelector('div.text-title-large a') || document.querySelector('.text-title-large');
     if (titleElement) {
       const fullTitle = titleElement.innerText.trim();
@@ -119,7 +112,6 @@ function extractCodeforces() {
     }
 
     if (!data.problemNumber) {
-      // Handles contest, gym, problemset URLs
       const match = window.location.pathname.match(
         /\/(?:problemset\/problem|contest|gym)\/(\d+)(?:\/problem|\/problems|\/submission)?(?:\/([A-Z0-9]+))?/i
       );
@@ -162,14 +154,11 @@ function extractCodeChef() {
     }
 
     const urlParts = window.location.pathname.split('/');
-    // Handles: /problems/X, /submit/X, /START/problems/X, /practice/problems/X
     if (urlParts.includes('problems')) {
       const idx = urlParts.indexOf('problems');
       if (urlParts[idx+1]) {
         data.problemNumber = urlParts[idx+1];
-        if (!data.problemName) {
-          data.problemName = data.problemNumber;
-        }
+        if (!data.problemName) data.problemName = data.problemNumber;
       }
     } else if (urlParts[1] === 'submit') {
       data.problemNumber = urlParts[2] || '';
@@ -235,6 +224,146 @@ function extractHackerRank() {
   return data;
 }
 
+function extractAtCoder() {
+  let data = { platform: "AtCoder", problemNumber: "", problemName: "", topic: "", allTags: [], difficulty: "N/A", language: "", problemStatement: "" };
+  try {
+    const titleEl = document.querySelector('h2, span.h2');
+    if (titleEl) {
+      const fullTitle = titleEl.innerText.trim();
+      const match = fullTitle.match(/^([A-Z0-9]+)\s*-\s*(.*)$/);
+      if (match) {
+        data.problemNumber = match[1];
+        data.problemName = match[2].trim();
+      } else {
+        data.problemName = fullTitle;
+      }
+    }
+
+    if (!data.problemName) {
+      const pageTitle = document.title;
+      const titleMatch = pageTitle.match(/^(.+?)\s*-\s*AtCoder/i);
+      if (titleMatch) data.problemName = titleMatch[1].trim();
+    }
+
+    if (!data.problemNumber) {
+      const urlParts = window.location.pathname.split('/');
+      if (urlParts.includes('tasks')) {
+        const idx = urlParts.indexOf('tasks');
+        if (urlParts[idx+1]) data.problemNumber = urlParts[idx+1].toUpperCase();
+      }
+    }
+
+    const langEl = document.querySelector('select[name="language_id"] option:checked, #select-lang option:checked');
+    if (langEl) data.language = langEl.innerText.trim();
+
+    const statement = document.querySelector('#task-statement, .lang-ja, .problem-statement');
+    if (statement) data.problemStatement = statement.innerText.trim().substring(0, 2000);
+  } catch (e) {
+    console.error("PUSHkar Error (AtCoder):", e);
+  }
+  return data;
+}
+
+function extractSPOJ() {
+  let data = { platform: "SPOJ", problemNumber: "", problemName: "", topic: "", allTags: [], difficulty: "N/A", language: "", problemStatement: "" };
+  try {
+    const titleEl = document.querySelector('h2.title, h1.title, #problem-name, h2');
+    if (titleEl) data.problemName = titleEl.innerText.trim();
+
+    if (!data.problemName) {
+      const pageTitle = document.title;
+      const titleMatch = pageTitle.match(/^(.+?)\s*-\s*SPOJ/i) || pageTitle.match(/^SPOJ.com\s*-\s*Problem\s*(.+)/i);
+      if (titleMatch) data.problemName = titleMatch[1].trim();
+    }
+
+    if (!data.problemNumber) {
+      const urlParts = window.location.pathname.split('/');
+      if (urlParts.includes('problems')) {
+        const idx = urlParts.indexOf('problems');
+        if (urlParts[idx+1]) data.problemNumber = urlParts[idx+1].toUpperCase();
+      }
+    }
+
+    const langEl = document.querySelector('select#lang option:checked, select[name="lang"] option:checked');
+    if (langEl) data.language = langEl.innerText.trim();
+
+    const statement = document.querySelector('#problem-body, .problem-body, #prob');
+    if (statement) data.problemStatement = statement.innerText.trim().substring(0, 2000);
+  } catch (e) {
+    console.error("PUSHkar Error (SPOJ):", e);
+  }
+  return data;
+}
+
+function extractCode360() {
+  let data = { platform: "Code360", problemNumber: "", problemName: "", topic: "", allTags: [], difficulty: "", language: "", problemStatement: "" };
+  try {
+    const titleEl = document.querySelector('h1, h2.problem-title, div[class*="problem-title"]');
+    if (titleEl) data.problemName = titleEl.innerText.trim();
+
+    if (!data.problemName) {
+      const pageTitle = document.title;
+      const titleMatch = pageTitle.match(/^(.+?)\s*[\|-]\s*(?:Code360|Naukri|CodingNinjas)/i);
+      if (titleMatch) data.problemName = titleMatch[1].trim();
+    }
+
+    if (!data.problemName) {
+      const urlParts = window.location.pathname.split('/');
+      if (urlParts.includes('problems')) {
+        const idx = urlParts.indexOf('problems');
+        if (urlParts[idx+1]) {
+          data.problemName = urlParts[idx+1].split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+      }
+    }
+
+    const diffEl = document.querySelector('span[class*="difficulty"], div[class*="difficulty"]');
+    if (diffEl) data.difficulty = diffEl.innerText.trim();
+
+    const tagEls = document.querySelectorAll('div[class*="tag"] a, span[class*="topic"]');
+    tagEls.forEach(tag => data.allTags.push(tag.innerText.trim()));
+    if (data.allTags.length > 0) data.topic = data.allTags[0];
+
+    const langEl = document.querySelector('div[class*="language"] button, span[class*="lang"]');
+    if (langEl) data.language = langEl.innerText.trim();
+
+    const statement = document.querySelector('div[class*="problem-statement"], div[class*="description"]');
+    if (statement) data.problemStatement = statement.innerText.trim().substring(0, 2000);
+  } catch (e) {
+    console.error("PUSHkar Error (Code360):", e);
+  }
+  return data;
+}
+
+function extractCSES() {
+  let data = { platform: "CSES", problemNumber: "", problemName: "", topic: "", allTags: [], difficulty: "N/A", language: "", problemStatement: "" };
+  try {
+    const titleEl = document.querySelector('h1');
+    if (titleEl) data.problemName = titleEl.innerText.trim();
+
+    if (!data.problemName) {
+      const pageTitle = document.title;
+      const titleMatch = pageTitle.match(/^(.+?)\s*-\s*CSES/i);
+      if (titleMatch) data.problemName = titleMatch[1].trim();
+    }
+
+    const urlParts = window.location.pathname.split('/');
+    if (urlParts.includes('task')) {
+      const idx = urlParts.indexOf('task');
+      if (urlParts[idx+1]) data.problemNumber = urlParts[idx+1];
+    }
+
+    const langEl = document.querySelector('select[name="lang"] option:checked');
+    if (langEl) data.language = langEl.innerText.trim();
+
+    const statement = document.querySelector('.content, div.task');
+    if (statement) data.problemStatement = statement.innerText.trim().substring(0, 2000);
+  } catch (e) {
+    console.error("PUSHkar Error (CSES):", e);
+  }
+  return data;
+}
+
 function extractData() {
   const hostname = window.location.hostname;
   let data = null;
@@ -249,6 +378,14 @@ function extractData() {
     data = extractCodeChef();
   } else if (hostname.includes("hackerrank.com")) {
     data = extractHackerRank();
+  } else if (hostname.includes("atcoder.jp")) {
+    data = extractAtCoder();
+  } else if (hostname.includes("spoj.com")) {
+    data = extractSPOJ();
+  } else if (hostname.includes("naukri.com")) {
+    data = extractCode360();
+  } else if (hostname.includes("cses.fi")) {
+    data = extractCSES();
   }
 
   if (data && !data.problemName) {
@@ -259,6 +396,10 @@ function extractData() {
       .replace(/\s*[-|]\s*Codeforces\s*$/i, '')
       .replace(/\s*[-|]\s*CodeChef\s*$/i, '')
       .replace(/\s*[-|]\s*HackerRank\s*$/i, '')
+      .replace(/\s*[-|]\s*AtCoder\s*$/i, '')
+      .replace(/\s*[-|]\s*SPOJ\s*$/i, '')
+      .replace(/\s*[-|]\s*Code360\s*$/i, '')
+      .replace(/\s*[-|]\s*CSES\s*$/i, '')
       .trim();
     if (cleaned) data.problemName = cleaned;
   }
@@ -281,10 +422,7 @@ function detectSubmission() {
     if (submitBtn && !submitBtn.dataset.pushkarListening) {
       submitBtn.dataset.pushkarListening = "true";
       submitBtn.addEventListener("click", () => {
-        setTimeout(() => {
-          extractData();
-          chrome.runtime.sendMessage({ action: "showBadge" });
-        }, 3000);
+        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
       });
     }
   }
@@ -294,10 +432,7 @@ function detectSubmission() {
     if (submitBtn && !submitBtn.dataset.pushkarListening) {
       submitBtn.dataset.pushkarListening = "true";
       submitBtn.addEventListener("click", () => {
-        setTimeout(() => {
-          extractData();
-          chrome.runtime.sendMessage({ action: "showBadge" });
-        }, 3000);
+        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
       });
     }
   }
@@ -307,10 +442,7 @@ function detectSubmission() {
     if (submitBtn && !submitBtn.dataset.pushkarListening) {
       submitBtn.dataset.pushkarListening = "true";
       submitBtn.addEventListener("click", () => {
-        setTimeout(() => {
-          extractData();
-          chrome.runtime.sendMessage({ action: "showBadge" });
-        }, 3000);
+        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
       });
     }
   }
@@ -320,10 +452,7 @@ function detectSubmission() {
     if (submitBtn && !submitBtn.dataset.pushkarListening) {
       submitBtn.dataset.pushkarListening = "true";
       submitBtn.addEventListener("click", () => {
-        setTimeout(() => {
-          extractData();
-          chrome.runtime.sendMessage({ action: "showBadge" });
-        }, 3000);
+        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
       });
     }
   }
@@ -333,10 +462,47 @@ function detectSubmission() {
     if (submitBtn && !submitBtn.dataset.pushkarListening) {
       submitBtn.dataset.pushkarListening = "true";
       submitBtn.addEventListener("click", () => {
-        setTimeout(() => {
-          extractData();
-          chrome.runtime.sendMessage({ action: "showBadge" });
-        }, 3000);
+        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
+      });
+    }
+  }
+
+  if (hostname.includes("atcoder.jp")) {
+    const submitBtn = document.querySelector('button[type="submit"], input[type="submit"]');
+    if (submitBtn && !submitBtn.dataset.pushkarListening) {
+      submitBtn.dataset.pushkarListening = "true";
+      submitBtn.addEventListener("click", () => {
+        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
+      });
+    }
+  }
+
+  if (hostname.includes("spoj.com")) {
+    const submitBtn = document.querySelector('input[type="submit"], button[type="submit"]');
+    if (submitBtn && !submitBtn.dataset.pushkarListening) {
+      submitBtn.dataset.pushkarListening = "true";
+      submitBtn.addEventListener("click", () => {
+        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
+      });
+    }
+  }
+
+  if (hostname.includes("naukri.com")) {
+    const submitBtn = document.querySelector('button[class*="submit"], button[class*="run"]');
+    if (submitBtn && !submitBtn.dataset.pushkarListening) {
+      submitBtn.dataset.pushkarListening = "true";
+      submitBtn.addEventListener("click", () => {
+        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
+      });
+    }
+  }
+
+  if (hostname.includes("cses.fi")) {
+    const submitBtn = document.querySelector('input[type="submit"], button[type="submit"]');
+    if (submitBtn && !submitBtn.dataset.pushkarListening) {
+      submitBtn.dataset.pushkarListening = "true";
+      submitBtn.addEventListener("click", () => {
+        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
       });
     }
   }
