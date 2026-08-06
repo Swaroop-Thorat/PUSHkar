@@ -3,25 +3,16 @@
 function extractLeetCode() {
   let data = { platform: "LeetCode", problemNumber: "", problemName: "", topic: "", allTags: [], difficulty: "", language: "", problemStatement: "" };
   try {
-    // Try getting problem name from page title
     if (!data.problemName) {
       const pageTitle = document.title;
-      // Format: "Rotate List - LeetCode"
       const titleMatch = pageTitle.match(/^(.+?)\s*-\s*LeetCode/i);
-      if (titleMatch) {
-        data.problemName = titleMatch[1].trim();
-      }
+      if (titleMatch) data.problemName = titleMatch[1].trim();
     }
 
-    // Try getting problem number from breadcrumb
     if (!data.problemNumber) {
       const breadcrumb = document.querySelector('a[href*="/problems/"]');
       if (breadcrumb) {
         const slug = breadcrumb.href.split('/problems/')[1]?.split('/')[0];
-        if (slug) {
-          // slug is already sanitized (rotate-list)
-          // problem number not available here so leave empty
-        }
       }
     }
 
@@ -37,13 +28,13 @@ function extractLeetCode() {
       }
     }
     if (!data.problemNumber) {
-       const pathParts = window.location.pathname.split('/');
-       if (pathParts.includes('problems')) {
-         const idx = pathParts.indexOf('problems');
-         if (pathParts[idx+1] && pathParts[idx+1] !== 'submissions') {
-           data.problemName = data.problemName || pathParts[idx+1].split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-         }
-       }
+      const pathParts = window.location.pathname.split('/');
+      if (pathParts.includes('problems')) {
+        const idx = pathParts.indexOf('problems');
+        if (pathParts[idx+1] && pathParts[idx+1] !== 'submissions') {
+          data.problemName = data.problemName || pathParts[idx+1].split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+      }
     }
 
     const easy = document.querySelector('div.text-difficulty-easy');
@@ -73,13 +64,13 @@ function extractGeeksForGeeks() {
   try {
     const titleEl = document.querySelector('h1.problems-heading, h3');
     if (titleEl) data.problemName = titleEl.innerText.trim();
-    
+
     if (!data.problemName) {
       const pageTitle = document.title;
       const titleMatch = pageTitle.match(/^(.+?)\s*\|\s*GeeksforGeeks/i) || pageTitle.match(/^(.+?)\s*-\s*GeeksforGeeks/i);
       if (titleMatch) data.problemName = titleMatch[1].trim();
     }
-    
+
     if (!data.problemName) {
       const pathParts = window.location.pathname.split('/');
       if (pathParts.includes('problems')) {
@@ -92,7 +83,7 @@ function extractGeeksForGeeks() {
 
     const diffEl = document.querySelector('.difficulty-block, span[class*="difficulty"]');
     if (diffEl) data.difficulty = diffEl.innerText.trim();
-    
+
     const tagEls = document.querySelectorAll('.problems_tag_label__A4Ism');
     tagEls.forEach(tag => {
       if (tag.href && tag.href.includes('/explore?category')) {
@@ -100,10 +91,10 @@ function extractGeeksForGeeks() {
       }
     });
     if (data.allTags.length > 0) data.topic = data.allTags[0];
-    
-    const langSelect = document.querySelector('.divider.text, .language-selector, .monaco-editor'); 
+
+    const langSelect = document.querySelector('.divider.text, .language-selector, .monaco-editor');
     if (langSelect) data.language = langSelect.innerText.trim();
-    
+
     const statement = document.querySelector('.problems-body, .problem-statement, div[class*="problem_content"]');
     if (statement) data.problemStatement = statement.innerText.trim();
   } catch (e) {
@@ -126,12 +117,17 @@ function extractCodeforces() {
         data.problemName = fullTitle;
       }
     }
+
     if (!data.problemNumber) {
-      const match = window.location.pathname.match(/\/(?:problemset\/problem|contest)\/(\d+)(?:\/problem|\/submission)?(?:\/([A-Z0-9]+))?/i);
+      // Handles contest, gym, problemset URLs
+      const match = window.location.pathname.match(
+        /\/(?:problemset\/problem|contest|gym)\/(\d+)(?:\/problem|\/problems|\/submission)?(?:\/([A-Z0-9]+))?/i
+      );
       if (match && match[1]) {
         data.problemNumber = match[1] + (match[2] || '');
       }
     }
+
     if (!data.problemName) {
       const pageTitle = document.title;
       const titleMatch = pageTitle.match(/^(.+?)\s*-\s*Codeforces/i);
@@ -141,10 +137,10 @@ function extractCodeforces() {
     const tagEls = document.querySelectorAll('span.tag-box');
     tagEls.forEach(tag => data.allTags.push(tag.innerText.trim()));
     if (data.allTags.length > 0) data.topic = data.allTags[0];
-    
-    const langSelect = document.querySelector('select[name="programTypeId"] option:checked') || document.querySelector('td:nth-child(4)'); // Some submission pages show lang in table
+
+    const langSelect = document.querySelector('select[name="programTypeId"] option:checked') || document.querySelector('td:nth-child(4)');
     if (langSelect) data.language = langSelect.innerText.trim();
-    
+
     const statement = document.querySelector('div.problem-statement');
     if (statement) data.problemStatement = statement.innerText.trim();
   } catch (e) {
@@ -158,7 +154,7 @@ function extractCodeChef() {
   try {
     const titleEl = document.querySelector('h1.problem-title, h1');
     if (titleEl) data.problemName = titleEl.innerText.trim();
-    
+
     if (!data.problemName) {
       const pageTitle = document.title;
       const titleMatch = pageTitle.match(/^(.+?)\s*\|\s*CodeChef/i);
@@ -166,23 +162,30 @@ function extractCodeChef() {
     }
 
     const urlParts = window.location.pathname.split('/');
-    if (urlParts.length > 2 && (urlParts[1] === 'problems' || urlParts[1] === 'submit')) {
-      data.problemNumber = urlParts[2];
-      if (!data.problemName && data.problemNumber) {
-         data.problemName = data.problemNumber;
+    // Handles: /problems/X, /submit/X, /START/problems/X, /practice/problems/X
+    if (urlParts.includes('problems')) {
+      const idx = urlParts.indexOf('problems');
+      if (urlParts[idx+1]) {
+        data.problemNumber = urlParts[idx+1];
+        if (!data.problemName) {
+          data.problemName = data.problemNumber;
+        }
       }
+    } else if (urlParts[1] === 'submit') {
+      data.problemNumber = urlParts[2] || '';
+      if (!data.problemName) data.problemName = data.problemNumber;
     }
-    
+
     const diffEl = document.querySelector('.difficulty-badge, span[class*="difficulty"]');
     if (diffEl) data.difficulty = diffEl.innerText.trim();
-    
+
     const tagEls = document.querySelectorAll('.tags-section a, .tags a');
     tagEls.forEach(tag => data.allTags.push(tag.innerText.trim()));
     if (data.allTags.length > 0) data.topic = data.allTags[0];
-    
+
     const langEl = document.querySelector('.language-selector .selected, .select2-selection__rendered');
     if (langEl) data.language = langEl.innerText.trim();
-    
+
     const statement = document.querySelector('div.problem-statement, #problem-statement');
     if (statement) data.problemStatement = statement.innerText.trim();
   } catch (e) {
@@ -196,7 +199,7 @@ function extractHackerRank() {
   try {
     const titleEl = document.querySelector('h1.ui-icon-label, h1.challenge-title');
     if (titleEl) data.problemName = titleEl.innerText.trim();
-    
+
     if (!data.problemName) {
       const pageTitle = document.title;
       const titleMatch = pageTitle.match(/^(.+?)\s*\|\s*HackerRank/i) || pageTitle.match(/^(.+?)\s*-\s*HackerRank/i);
@@ -213,17 +216,17 @@ function extractHackerRank() {
         }
       }
     }
-    
+
     const diffEl = document.querySelector('div.difficulty-block, span.difficulty');
     if (diffEl) data.difficulty = diffEl.innerText.trim();
-    
+
     const tagEls = document.querySelectorAll('.challenge-tags a, .tag-container a');
     tagEls.forEach(tag => data.allTags.push(tag.innerText.trim()));
     if (data.allTags.length > 0) data.topic = data.allTags[0];
-    
+
     const langEl = document.querySelector('.select2-selection__rendered, .lang-select, .language-selector');
     if (langEl) data.language = langEl.innerText.trim();
-    
+
     const statement = document.querySelector('div.challenge-body-html');
     if (statement) data.problemStatement = statement.innerText.trim();
   } catch (e) {
@@ -250,7 +253,6 @@ function extractData() {
 
   if (data && !data.problemName) {
     const title = document.title;
-    // Remove platform suffix
     const cleaned = title
       .replace(/\s*[-|]\s*LeetCode\s*$/i, '')
       .replace(/\s*[-|]\s*GeeksforGeeks\s*$/i, '')
@@ -268,11 +270,9 @@ function extractData() {
   }
 }
 
-// Initial extraction (with slight delay for JS rendered apps)
 const initialDelay = location.href.includes('/submissions/') ? 2500 : 1500;
 setTimeout(extractData, initialDelay);
 
-// Detect submission on each platform
 function detectSubmission() {
   const hostname = window.location.hostname;
 
@@ -342,10 +342,8 @@ function detectSubmission() {
   }
 }
 
-// Run detectSubmission after page loads
 setTimeout(detectSubmission, 2000);
 
-// Re-run if URL changes (for SPAs)
 let lastUrl = location.href;
 new MutationObserver(() => {
   const url = location.href;

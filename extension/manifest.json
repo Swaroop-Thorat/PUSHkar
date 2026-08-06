@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Solve it. PUSHkar. ⚡ — Auto push your coding solutions to GitHub",
   "author": "Swaroop",
-  "homepage_url": "https://github.com/swaroop/pushkar",
+  "homepage_url": "https://github.com/Swaroop-Thorat/PUSHkar",
 
   "action": {
     "default_popup": "popup.html",
@@ -27,8 +27,13 @@
         "*://*.codeforces.com/problemset/problem/*/*",
         "*://*.codeforces.com/contest/*/problem/*",
         "*://*.codeforces.com/contest/*/submission/*",
+        "*://*.codeforces.com/gym/*/problem/*",
+        "*://*.codeforces.com/gym/*/problems/*",
         "*://*.codechef.com/problems/*",
         "*://*.codechef.com/submit/*",
+        "*://*.codechef.com/*/problems/*",
+        "*://*.codechef.com/practice/*",
+        "*://*.codechef.com/learn/*",
         "*://*.hackerrank.com/challenges/*",
         "*://*.hackerrank.com/challenges/*/submissions/*"
       ],
@@ -40,6 +45,7 @@
   "background": {
     "service_worker": "background.js"
   },
+
   "permissions": [
     "activeTab",
     "storage",
@@ -56,8 +62,13 @@
     "*://*.codeforces.com/problemset/problem/*/*",
     "*://*.codeforces.com/contest/*/problem/*",
     "*://*.codeforces.com/contest/*/submission/*",
+    "*://*.codeforces.com/gym/*/problem/*",
+    "*://*.codeforces.com/gym/*/problems/*",
     "*://*.codechef.com/problems/*",
     "*://*.codechef.com/submit/*",
+    "*://*.codechef.com/*/problems/*",
+    "*://*.codechef.com/practice/*",
+    "*://*.codechef.com/learn/*",
     "*://*.hackerrank.com/challenges/*",
     "*://*.hackerrank.com/challenges/*/submissions/*",
     "http://localhost:8000/*"
