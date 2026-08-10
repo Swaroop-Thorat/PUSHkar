@@ -6,7 +6,7 @@ A Chrome Extension that automatically pushes your coding solutions to GitHub —
 ### Badges
 - **Built by:** Swaroop
 - **License:** MIT
-- **Platforms:** LeetCode | GFG | Codeforces | CodeChef | HackerRank
+- **Platforms:** LeetCode | GFG | Codeforces | CodeChef | HackerRank | AtCoder | SPOJ | Code360 | CSES
 - **Status:** Active
 
 ---
@@ -46,34 +46,47 @@ your-github-repo/
 
 ---
 
-### Setup Instructions
+### Full Setup Guide
 
-#### Prerequisites
-- [Node.js](https://nodejs.org/) installed
-- A GitHub account + Personal Access Token ([how to get one](https://github.com/settings/tokens) → select `repo` scope)
+> One time, I promise. ✅
 
 ---
 
-#### Step 1 — Clone this repo
+#### Step 1 — Generate your GitHub Token
+
+1. Go to **GitHub → Settings → Developer Settings → Personal Access Tokens → Tokens (Classic)**
+2. Click **Generate New Token (Classic)** and authenticate if prompted
+3. Add a note (e.g. `PUSHkar`), set expiry to **No Expiry**
+4. Under scopes, select **`repo`** (full repo access)
+5. Click **Generate Token** — copy it and save it somewhere temporarily (e.g. Notepad)
+
+> ⚠️ You won't be able to see this token again after leaving the page.
+
+---
+
+#### Step 2 — Create a GitHub Repo
+
+Create a dedicated GitHub repository for your solutions (e.g. `CodingProfile`).
+Note the repo name — you'll need it in Step 4.
+
+---
+
+#### Step 3 — Clone PUSHkar
+
+Head to [github.com/Swaroop-Thorat/PUSHkar](https://github.com/Swaroop-Thorat/PUSHkar) and clone the repo into your main user folder on the C drive:
+
 ```bash
 git clone https://github.com/Swaroop-Thorat/PUSHkar.git
-cd pushkar
+cd PUSHkar
 ```
 
 ---
 
-#### Step 2 — Configure GitHub credentials
-```bash
-node setup.js
-```
-Enter your GitHub token, username, and repo name when prompted.
-This creates `server/.env` automatically — never share or commit this file.
+#### Step 4 — Run Setup
 
----
+Open a terminal **as Administrator**, navigate into the PUSHkar folder, and run:
 
-#### Step 3 — Register auto-start (run once)
-
-**Windows** — right-click and **Run as administrator:**
+**Windows:**
 ```bash
 .\setup.bat
 ```
@@ -83,50 +96,86 @@ This creates `server/.env` automatically — never share or commit this file.
 chmod +x setup.sh && ./setup.sh
 ```
 
-This registers the server to start automatically in the background on every login. **No terminal needed after this.**
+When prompted, enter:
+- Your **GitHub Personal Access Token** (from Step 1)
+- Your **GitHub username**
+- Your **repo name** (from Step 2)
 
-> ⚠️ On Windows, `setup.bat` must be run as Administrator or it will fail.
-
----
-
-#### Step 4 — Reboot your PC
-
-After reboot, the server starts automatically. Verify by opening:
+Hit Enter, then run:
+```bash
+npm start
 ```
-http://localhost:8000
+
+To confirm the server is running, open your browser and go to:
 ```
-If you see anything (even `Cannot GET /`) → ✅ Server is running.
+http://localhost:8000/health
+```
+If the page loads → ✅ Server is running.
+
+> ⚠️ On Windows, `setup.bat` **must** be run as Administrator or it will fail silently.
 
 ---
 
-#### Step 5 — Load the extension in Chrome
-- Open: `chrome://extensions/`
-- Enable: **Developer Mode** (top right toggle)
-- Click: **Load Unpacked**
-- Select: the `/extension` folder
-- PUSHkar icon appears in toolbar ✅
+#### Step 5 — Auto-Start Shortcut *(Optional but recommended)*
+
+Inside the PUSHkar folder, find `start_pushkar.vbs` and **create a desktop shortcut** of it.
+
+Since the server shuts down on every system restart, just double-click this shortcut after booting up — no need to open a terminal. 
+
+> Note: Windows may sometimes restrict auto-start scripts, so this shortcut is the most reliable workaround.
 
 ---
 
-#### Step 6 — Start pushing!
+#### Step 6 — Load the Extension
+
+1. Open your browser and go to `chrome://extensions/`
+2. Enable **Developer Mode** (toggle in the top right)
+3. Click **Load Unpacked**
+4. Select the **`/extension`** folder inside the PUSHkar directory *(not the root folder)*
+5. The PUSHkar icon will appear in your toolbar ✅
+
+**Set a keyboard shortcut (recommended):**
+- Scroll down to **Keyboard Shortcuts** (below your extensions list)
+- Find **PUSHkar** and set your preferred shortcut (e.g. `Ctrl+P`)
+- Refresh your browser — you're done!
+
+---
+
+#### Step 7 — Start Pushing!
+
 Go to any supported platform, open a problem, solve it.
-Click PUSHkar icon → paste code → click **PUSH ⚡**
+Click the PUSHkar icon (or use your shortcut) → paste your code → click **PUSH ⚡**
+
+---
+
+### Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| Push fails — *target repo not set* | Redo Steps 2 and 4 |
+| Push fails — *server not running* | Double-click the `start_pushkar.vbs` shortcut, or `cd` into PUSHkar and run `npm start` |
+| `setup.bat` does nothing | Make sure you're running the terminal as **Administrator** |
+| `localhost:8000/health` doesn't load | Server isn't running — start it via the shortcut or `npm start` |
 
 ---
 
 ### Supported Platforms
-| Platform | Auto-detect | Problem Statement | Tags |
-|----------|-------------|-------------------|------|
-| LeetCode | ✅ | ✅ | ✅ |
-| GeeksforGeeks | ✅ | ✅ | ✅ |
-| Codeforces | ✅ | ✅ | ✅ |
-| CodeChef | ✅ | ✅ | ✅ |
-| HackerRank | ✅ | ✅ | ✅ |
+| Platform | Auto-detect | Problem Statement | Tags | Contest Problems |
+|----------|-------------|-------------------|------|-----------------|
+| LeetCode | ✅ | ✅ | ✅ | ✅ |
+| GeeksforGeeks | ✅ | ✅ | ✅ | ✅ |
+| Codeforces | ✅ | ✅ | ✅ | ✅ |
+| CodeChef | ✅ | ✅ | ✅ | ✅ |
+| HackerRank | ✅ | ✅ | ✅ | ✅ |
+| AtCoder | ✅ | ✅ | ✅ | ✅ |
+| SPOJ | ✅ | ✅ | ✅ | ✅ |
+| Code360 | ✅ | ✅ | ✅ | ✅ |
+| CSES | ✅ | ✅ | ✅ | ✅ |
 
 ---
 
 ### Solutions Index
-(This section is auto-updated by PUSHkar on every push)
+*(This section is auto-updated by PUSHkar on every push)*
 
 | # | Problem | Platform | Topic | Difficulty | Language |
 |---|---------|----------|-------|------------|----------|
@@ -134,17 +183,16 @@ Click PUSHkar icon → paste code → click **PUSH ⚡**
 ---
 
 ### Important Notes
-- Server auto-starts on boot after setup — no need to run `npm start` manually
 - Never share your `.env` file — it contains your GitHub token
 - `.env` is already in `.gitignore` — safe to push this repo
-- If server ever stops responding, restart it: `npm start`
+- If the server ever stops responding, restart it via the shortcut or run `npm start`
 
 ---
 
 ### Built By
 PUSHkar is built and maintained by Swaroop ⚡
 Every commit pushed by this tool carries the watermark:
-"Pushed via PUSHkar⚡"
+> "Pushed via PUSHkar⚡"
 
 GitHub: [https://github.com/Swaroop-Thorat](https://github.com/Swaroop-Thorat)
 
