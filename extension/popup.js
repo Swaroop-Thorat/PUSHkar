@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const platformBadge = document.getElementById('platform-badge');
   const difficultyBadge = document.getElementById('difficulty-badge');
-  const languageBadge = document.getElementById('language-badge');
+  const languageSelect = document.getElementById('language-select');
   const problemName = document.getElementById('problem-name');
   const topicInput = document.getElementById('topic-input');
   const codeInput = document.getElementById('code-input');
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       difficultyBadge.innerText = extractedData.difficulty || 'N/A';
       difficultyBadge.className = 'badge diff-badge ' + (extractedData.difficulty ? extractedData.difficulty.toLowerCase() : '');
       
-      languageBadge.innerText = extractedData.language || 'N/A';
+      languageSelect.value = extractedData.language || 'Python';
       
       const numStr = extractedData.problemNumber ? `${extractedData.problemNumber}. ` : '';
       problemName.innerText = numStr + (extractedData.problemName || 'Unknown Problem');
@@ -73,12 +73,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (code.length > 0 && extractedData) {
       const firstLine = code.split('\n')[0].trim();
-      if (firstLine.startsWith('def ')) extractedData.language = 'Python';
-      else if (firstLine.startsWith('class ') && code.includes('public static void main')) extractedData.language = 'Java';
-      else if (firstLine.startsWith('function') || firstLine.startsWith('const ') || firstLine.startsWith('let ')) extractedData.language = 'JavaScript';
-      else if (firstLine.includes('#include')) extractedData.language = 'C++';
-      
-      languageBadge.innerText = extractedData.language || 'N/A';
+      let detected = null;
+      if (firstLine.startsWith('def ')) detected = 'Python';
+      else if (firstLine.startsWith('class ') && code.includes('public static void main')) detected = 'Java';
+      else if (firstLine.startsWith('function') || firstLine.startsWith('const ') || firstLine.startsWith('let ')) detected = 'JavaScript';
+      else if (firstLine.includes('#include')) detected = 'C++';
+
+      if (detected) {
+        extractedData.language = detected;
+        languageSelect.value = detected;
+      }
     }
   });
 
@@ -110,6 +114,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     extractedData.code = code;
     extractedData.topic = topic;
+    extractedData.language = languageSelect.value;
 
     pushBtn.innerText = "PUSHING... ⚡";
     pushBtn.disabled = true;

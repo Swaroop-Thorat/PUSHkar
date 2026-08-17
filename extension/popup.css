@@ -236,3 +236,30 @@ footer {
 #linkedin-link:hover {
   text-decoration: underline;
 }
+
+/* Language select dropdown styled as a badge */
+#language-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--lang-color);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--text-color);
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: 2px 2px 0px var(--shadow-color);
+  padding: 4px 24px 4px 10px;
+  cursor: pointer;
+  outline: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23000'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+#language-select:focus,
+#language-select:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px transparent;
+}
