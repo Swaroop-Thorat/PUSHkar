@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       difficultyBadge.innerText = extractedData.difficulty || 'N/A';
       difficultyBadge.className = 'badge diff-badge ' + (extractedData.difficulty ? extractedData.difficulty.toLowerCase() : '');
       
-      languageSelect.value = extractedData.language || 'Python';
+      languageSelect.value = extractedData.language || 'Java';
       
       const numStr = extractedData.problemNumber ? `${extractedData.problemNumber}. ` : '';
       problemName.innerText = numStr + (extractedData.problemName || 'Unknown Problem');

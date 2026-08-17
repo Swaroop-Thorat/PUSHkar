@@ -87,7 +87,7 @@ app.post('/push', async (req, res) => {
     }
 
     const sanitizedProblemName = problemName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    const ext = langExtMap[language?.toLowerCase()] || 'txt';
+    const ext = langExtMap[language?.toLowerCase()] || 'java';
 
     const codePath = `${platform}/${topic || 'Uncategorized'}/${sanitizedProblemName}/solution.${ext}`;
     const problemPath = `${platform}/${topic || 'Uncategorized'}/${sanitizedProblemName}/problem.md`;
