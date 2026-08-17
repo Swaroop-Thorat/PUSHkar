@@ -42,6 +42,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       languageSelect.value = extractedData.language || 'Java';
       
+      if (languageSelect.selectedIndex === -1 || !languageSelect.value) {
+        languageSelect.value = 'Java';
+      }
+      
       const numStr = extractedData.problemNumber ? `${extractedData.problemNumber}. ` : '';
       problemName.innerText = numStr + (extractedData.problemName || 'Unknown Problem');
       
