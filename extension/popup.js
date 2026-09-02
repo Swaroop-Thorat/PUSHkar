@@ -48,11 +48,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Fetch user's default language from server config
       if (!extractedData.language) {
+        // Map raw server language keys to dropdown option values
+        const langKeyToOption = {
+          'cpp': 'C++', 'c++': 'C++',
+          'c': 'C',
+          'python': 'Python', 'python3': 'Python',
+          'javascript': 'JavaScript',
+          'typescript': 'TypeScript',
+          'java': 'Java',
+          'csharp': 'C#', 'c#': 'C#',
+        };
+
         fetch('http://localhost:8000/health')
           .then(res => res.json())
           .then(data => {
             if (data.defaultLanguage) {
-              languageSelect.value = data.defaultLanguage;
+              const normalized = langKeyToOption[data.defaultLanguage.toLowerCase()] || data.defaultLanguage;
+              languageSelect.value = normalized;
               if (languageSelect.selectedIndex === -1 || !languageSelect.value) {
                 languageSelect.value = 'Java';
               }
