@@ -1,0 +1,34 @@
+[33mefc9159[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mlanguage-selection[m[33m, [m[1;31morigin/language-selection[m[33m)[m language selection fproblem solved
+[33m948ae81[m chrome try-catch error solved
+[33m1fb0e40[m errors solved
+[33md2d1c36[m minor language selection changes
+[33m0116f14[m minor text changes
+[33mcfdb51f[m Language selection feature added
+[33m87a52a8[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m implement popup interface for data management and solution submission
+[33m692864a[m implement browser extension popup and backend server for GitHub synchronization
+[33m012d9ec[m Merge pull request #1 from Swaroop-Thorat/language-dropdown-list-update
+[33mbfac716[m[33m ([m[1;31morigin/language-dropdown-list-update[m[33m, [m[1;32mlanguage-dropdown-list-update[m[33m)[m  implement neubrutalism UI for extension popup with code submission interface
+[33mb77c154[m Update copyright year in LICENSE file
+[33md075741[m docs: update README with expanded platform support, detailed setup guide, and troubleshooting section
+[33m98444e5[m feat: implement multi-platform competitive programming problem data extraction in browser extension
+[33m92764f0[m leetcode contest page added
+[33me72ef93[m fixed codechef features
+[33m09a51cd[m Changed watermark for generalization
+[33m570020e[m changed setup.bat file
+[33m9232c9d[m startup changed
+[33m2f1b1cd[m start command changed
+[33m805ff2d[m feat: implement neubrutalism-styled popup interface for PUSHkar extension
+[33mf944590[m feat: add content script to extract problem details from multiple coding platforms
+[33mff14e8a[m chore: ignore package-lock.json
+[33mcbafb4a[m docs: update README with streamlined setup instructions and auto-start configuration steps
+[33ma86fdde[m fix: correct escaping and path handling in background execution scripts
+[33m1452a64[m feat: add error handling and administrator privilege prompt for scheduled task registration
+[33mdd1e6c2[m feat: add cross-platform setup scripts for auto-starting the server on macOS, Linux, and Windows
+[33mab4c162[m feat: implement core PUSHkar extension architecture and local server logic with GitHub integration
+[33m7a186de[m feat: initialize express server to automate GitHub repository updates for coding problems
+[33me3f876a[m feat: implement core extension structure and competitive programming data extraction logic
+[33m53d56af[m feat: implement content extraction scripts for major coding platforms and add extension manifest
+[33m71ad11d[m links changed
+[33m7347160[m  Initial release — PUSHkar by Swaroop
+[33mcd49e3d[m ✅ PUSHkar v1.0.0 — All platforms tested ⚡
+[33m8b3b5d8[m 🚀 Initial release — PUSHkar by Swaroop ⚡
