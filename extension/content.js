@@ -406,13 +406,14 @@ function extractData() {
 
   if (data) {
     try {
-      if (!chrome.runtime?.id) return; // context invalidated
       chrome.storage.local.set({ pushkar_data: data }, () => {
-        if (chrome.runtime.lastError) return; // swallow stale-context error
-        console.log("PUSHkar: Data extracted ⚡");
+        try {
+          if (chrome.runtime.lastError) return;
+          console.log("PUSHkar: Data extracted ⚡");
+        } catch (_) {}
       });
     } catch (e) {
-      // Extension was reloaded; old content script can't talk to it anymore
+      // Extension context invalidated after reload — ignore
     }
   }
 }
@@ -420,12 +421,11 @@ function extractData() {
 /** Safely send a message to the background — no-ops if context is invalidated. */
 function safeSendMessage(msg) {
   try {
-    if (!chrome.runtime?.id) return;
     chrome.runtime.sendMessage(msg, () => {
-      void chrome.runtime.lastError; // suppress unchecked-error warning
+      try { void chrome.runtime.lastError; } catch (_) {}
     });
   } catch (e) {
-    // Extension context gone — ignore
+    // Extension context invalidated — ignore
   }
 }
 
