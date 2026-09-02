@@ -406,6 +406,7 @@ function extractData() {
 
   if (data) {
     try {
+      if (!chrome.runtime?.id) return; // context already invalidated — bail early
       chrome.storage.local.set({ pushkar_data: data }, () => {
         try {
           if (chrome.runtime.lastError) return;
@@ -529,7 +530,11 @@ function detectSubmission() {
 setTimeout(detectSubmission, 2000);
 
 let lastUrl = location.href;
-new MutationObserver(() => {
+const urlObserver = new MutationObserver(() => {
+  if (!chrome.runtime?.id) {
+    urlObserver.disconnect(); // context gone — stop observing
+    return;
+  }
   const url = location.href;
   if (url !== lastUrl) {
     lastUrl = url;
@@ -537,4 +542,5 @@ new MutationObserver(() => {
     setTimeout(extractData, delay);
     setTimeout(detectSubmission, delay + 500);
   }
-}).observe(document.body, { childList: true, subtree: true });
+});
+urlObserver.observe(document.body, { childList: true, subtree: true });
