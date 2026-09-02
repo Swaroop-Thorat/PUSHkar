@@ -405,9 +405,27 @@ function extractData() {
   }
 
   if (data) {
-    chrome.storage.local.set({ pushkar_data: data }, () => {
-      console.log("PUSHkar: Data extracted ⚡");
+    try {
+      if (!chrome.runtime?.id) return; // context invalidated
+      chrome.storage.local.set({ pushkar_data: data }, () => {
+        if (chrome.runtime.lastError) return; // swallow stale-context error
+        console.log("PUSHkar: Data extracted ⚡");
+      });
+    } catch (e) {
+      // Extension was reloaded; old content script can't talk to it anymore
+    }
+  }
+}
+
+/** Safely send a message to the background — no-ops if context is invalidated. */
+function safeSendMessage(msg) {
+  try {
+    if (!chrome.runtime?.id) return;
+    chrome.runtime.sendMessage(msg, () => {
+      void chrome.runtime.lastError; // suppress unchecked-error warning
     });
+  } catch (e) {
+    // Extension context gone — ignore
   }
 }
 
@@ -422,7 +440,7 @@ function detectSubmission() {
     if (submitBtn && !submitBtn.dataset.pushkarListening) {
       submitBtn.dataset.pushkarListening = "true";
       submitBtn.addEventListener("click", () => {
-        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
+        setTimeout(() => { extractData(); safeSendMessage({ action: "showBadge" }); }, 3000);
       });
     }
   }
@@ -432,7 +450,7 @@ function detectSubmission() {
     if (submitBtn && !submitBtn.dataset.pushkarListening) {
       submitBtn.dataset.pushkarListening = "true";
       submitBtn.addEventListener("click", () => {
-        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
+        setTimeout(() => { extractData(); safeSendMessage({ action: "showBadge" }); }, 3000);
       });
     }
   }
@@ -442,7 +460,7 @@ function detectSubmission() {
     if (submitBtn && !submitBtn.dataset.pushkarListening) {
       submitBtn.dataset.pushkarListening = "true";
       submitBtn.addEventListener("click", () => {
-        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
+        setTimeout(() => { extractData(); safeSendMessage({ action: "showBadge" }); }, 3000);
       });
     }
   }
@@ -452,7 +470,7 @@ function detectSubmission() {
     if (submitBtn && !submitBtn.dataset.pushkarListening) {
       submitBtn.dataset.pushkarListening = "true";
       submitBtn.addEventListener("click", () => {
-        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
+        setTimeout(() => { extractData(); safeSendMessage({ action: "showBadge" }); }, 3000);
       });
     }
   }
@@ -462,7 +480,7 @@ function detectSubmission() {
     if (submitBtn && !submitBtn.dataset.pushkarListening) {
       submitBtn.dataset.pushkarListening = "true";
       submitBtn.addEventListener("click", () => {
-        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
+        setTimeout(() => { extractData(); safeSendMessage({ action: "showBadge" }); }, 3000);
       });
     }
   }
@@ -472,7 +490,7 @@ function detectSubmission() {
     if (submitBtn && !submitBtn.dataset.pushkarListening) {
       submitBtn.dataset.pushkarListening = "true";
       submitBtn.addEventListener("click", () => {
-        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
+        setTimeout(() => { extractData(); safeSendMessage({ action: "showBadge" }); }, 3000);
       });
     }
   }
@@ -482,7 +500,7 @@ function detectSubmission() {
     if (submitBtn && !submitBtn.dataset.pushkarListening) {
       submitBtn.dataset.pushkarListening = "true";
       submitBtn.addEventListener("click", () => {
-        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
+        setTimeout(() => { extractData(); safeSendMessage({ action: "showBadge" }); }, 3000);
       });
     }
   }
@@ -492,7 +510,7 @@ function detectSubmission() {
     if (submitBtn && !submitBtn.dataset.pushkarListening) {
       submitBtn.dataset.pushkarListening = "true";
       submitBtn.addEventListener("click", () => {
-        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
+        setTimeout(() => { extractData(); safeSendMessage({ action: "showBadge" }); }, 3000);
       });
     }
   }
@@ -502,7 +520,7 @@ function detectSubmission() {
     if (submitBtn && !submitBtn.dataset.pushkarListening) {
       submitBtn.dataset.pushkarListening = "true";
       submitBtn.addEventListener("click", () => {
-        setTimeout(() => { extractData(); chrome.runtime.sendMessage({ action: "showBadge" }); }, 3000);
+        setTimeout(() => { extractData(); safeSendMessage({ action: "showBadge" }); }, 3000);
       });
     }
   }
