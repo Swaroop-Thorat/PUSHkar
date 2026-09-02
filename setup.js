@@ -19,7 +19,7 @@ async function setup() {
     {
       type: 'input',
       name: 'repo',
-      message: 'Enter your GitHub Repo Name (will be created if not exists):'
+      message: 'Enter your GitHub Repo Name:'
     },
     {
       type: 'list',
