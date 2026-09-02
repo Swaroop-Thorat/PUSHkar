@@ -66,7 +66,7 @@ async function pushFile(path, content) {
 }
 
 app.get('/health', (req, res) => {
-  res.json({ status: "PUSHkar is alive ⚡" });
+  res.json({ status: "PUSHkar is alive ⚡", defaultLanguage: process.env.DEFAULT_LANGUAGE || 'Java' });
 });
 
 app.post('/push', async (req, res) => {
@@ -87,7 +87,8 @@ app.post('/push', async (req, res) => {
     }
 
     const sanitizedProblemName = problemName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    const ext = langExtMap[language?.toLowerCase()] || 'java';
+    const defaultExt = langExtMap[(process.env.DEFAULT_LANGUAGE || 'Java').toLowerCase()] || 'java';
+    const ext = langExtMap[language?.toLowerCase()] || defaultExt;
 
     const codePath = `${platform}/${topic || 'Uncategorized'}/${sanitizedProblemName}/solution.${ext}`;
     const problemPath = `${platform}/${topic || 'Uncategorized'}/${sanitizedProblemName}/problem.md`;

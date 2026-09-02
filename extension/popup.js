@@ -40,10 +40,25 @@ document.addEventListener('DOMContentLoaded', async () => {
       difficultyBadge.innerText = extractedData.difficulty || 'N/A';
       difficultyBadge.className = 'badge diff-badge ' + (extractedData.difficulty ? extractedData.difficulty.toLowerCase() : '');
       
-      languageSelect.value = extractedData.language || 'Java';
-      
+      let initialLang = extractedData.language || 'Java';
+      languageSelect.value = initialLang;
       if (languageSelect.selectedIndex === -1 || !languageSelect.value) {
         languageSelect.value = 'Java';
+      }
+
+      // Fetch user's default language from server config
+      if (!extractedData.language) {
+        fetch('http://localhost:8000/health')
+          .then(res => res.json())
+          .then(data => {
+            if (data.defaultLanguage) {
+              languageSelect.value = data.defaultLanguage;
+              if (languageSelect.selectedIndex === -1 || !languageSelect.value) {
+                languageSelect.value = 'Java';
+              }
+            }
+          })
+          .catch(e => console.log('Could not fetch default config:', e));
       }
       
       const numStr = extractedData.problemNumber ? `${extractedData.problemNumber}. ` : '';
