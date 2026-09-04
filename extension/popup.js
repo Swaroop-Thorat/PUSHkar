@@ -1,9 +1,7 @@
-// extension/popup.js
 
 let extractedData = null;
 
-document.addEventListener('DOMContentLoaded', async () => {
-  // Clear badge when popup opens
+document.addEventListener('DOMContentLoaded', () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs[0]) {
       chrome.action.setBadgeText({ text: "", tabId: tabs[0].id });
@@ -19,18 +17,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   const pushBtn = document.getElementById('push-btn');
   const statusMsg = document.getElementById('status-message');
 
-  // Character count element
   const charCountEl = document.createElement('div');
   charCountEl.className = 'char-count';
   charCountEl.innerText = '0 characters';
   codeInput.parentNode.insertBefore(charCountEl, codeInput.nextSibling);
 
-  // Tags container
   const tagsContainer = document.createElement('div');
   tagsContainer.className = 'tags-container';
   topicInput.parentNode.insertBefore(tagsContainer, topicInput.nextSibling);
 
-  // Read data
   chrome.storage.local.get(['pushkar_data'], (result) => {
     if (result.pushkar_data) {
       extractedData = result.pushkar_data;
@@ -51,7 +46,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       topicInput.value = extractedData.topic || '';
 
-      // Render tags
       if (extractedData.allTags && extractedData.allTags.length > 0) {
         extractedData.allTags.forEach(tag => {
           const chip = document.createElement('span');
@@ -70,7 +64,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Code textarea auto-detect language on input
   codeInput.addEventListener('input', () => {
     const code = codeInput.value;
     charCountEl.innerText = `${code.length} characters`;
@@ -90,7 +83,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Push Button
   pushBtn.addEventListener('click', async () => {
     if (!extractedData) {
       showStatus("No data to push.", "error");

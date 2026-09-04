@@ -1,4 +1,3 @@
-// extension/content.js
 
 function extractLeetCode() {
   let data = { platform: "LeetCode", problemNumber: "", problemName: "", topic: "", allTags: [], difficulty: "", language: "", problemStatement: "" };
@@ -386,22 +385,6 @@ function extractData() {
     data = extractCode360();
   } else if (hostname.includes("cses.fi")) {
     data = extractCSES();
-  }
-
-  if (data && !data.problemName) {
-    const title = document.title;
-    const cleaned = title
-      .replace(/\s*[-|]\s*LeetCode\s*$/i, '')
-      .replace(/\s*[-|]\s*GeeksforGeeks\s*$/i, '')
-      .replace(/\s*[-|]\s*Codeforces\s*$/i, '')
-      .replace(/\s*[-|]\s*CodeChef\s*$/i, '')
-      .replace(/\s*[-|]\s*HackerRank\s*$/i, '')
-      .replace(/\s*[-|]\s*AtCoder\s*$/i, '')
-      .replace(/\s*[-|]\s*SPOJ\s*$/i, '')
-      .replace(/\s*[-|]\s*Code360\s*$/i, '')
-      .replace(/\s*[-|]\s*CSES\s*$/i, '')
-      .trim();
-    if (cleaned) data.problemName = cleaned;
   }
 
   if (data) {

@@ -16,7 +16,7 @@ async function setup() {
   
   const token = await askQuestion("Enter your GitHub Personal Access Token: ");
   const username = await askQuestion("Enter your GitHub Username: ");
-  const repo = await askQuestion("Enter your GitHub Repo Name (will be created if not exists): ");
+  const repo = await askQuestion("Enter your GitHub Repo Name: ");
   
   const envPath = path.join(__dirname, 'server', '.env');
   const envContent = `GITHUB_TOKEN=${token}\nGITHUB_USERNAME=${username}\nREPO_NAME=${repo}\n`;
