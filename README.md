@@ -1,4 +1,4 @@
-# PUSHkar ⚡
+# PUSHkar 
 > Solve it. PUSHkar.
 
 A Chrome Extension that automatically pushes your coding solutions to GitHub — organized by platform and topic.
@@ -21,7 +21,7 @@ PUSHkar is a streamlined tool that connects a local Chrome Extension to a local 
 - Pushes solution code + problem statement together
 - Auto-organized repo structure: `Platform/Topic/problem-name/`
 - Auto-updates README index table on every push
-- Commit watermark: "Pushed via PUSHkar⚡"
+- Commit watermark: "Pushed via PUSHkar" 
 - 100% free, runs locally, no deployment needed
 - **Server auto-starts on boot — no terminal needed after setup**
 - Neubrutalism UI
@@ -107,9 +107,8 @@ npm start
 ```
 
 To confirm the server is running, open your browser and go to:
-```
 http://localhost:8000/health
-```
+
 If the page loads → ✅ Server is running.
 
 > ⚠️ On Windows, `setup.bat` **must** be run as Administrator or it will fail silently.
@@ -120,7 +119,7 @@ If the page loads → ✅ Server is running.
 
 Inside the PUSHkar folder, find `start_pushkar.vbs` and **create a desktop shortcut** of it.
 
-Since the server shuts down on every system restart, just double-click this shortcut after booting up — no need to open a terminal. 
+Since the server shuts down on every system restart, just double-click this shortcut after booting up — no need to open a terminal.
 
 > Note: Windows may sometimes restrict auto-start scripts, so this shortcut is the most reliable workaround.
 
@@ -186,6 +185,47 @@ Click the PUSHkar icon (or use your shortcut) → paste your code → click **PU
 - Never share your `.env` file — it contains your GitHub token
 - `.env` is already in `.gitignore` — safe to push this repo
 - If the server ever stops responding, restart it via the shortcut or run `npm start`
+
+---
+
+### Changing Your Default Language *(Optional)*
+> ⚠️ Only do this if you're comfortable editing code files.
+
+PUSHkar defaults to **Java** in the language dropdown. If you primarily code in C++ or Python, you can change it permanently in 2 files:
+
+**File 1 — `server/server.js` line 91:**
+Find this line:
+```js
+const ext = langExtMap[language?.toLowerCase()] || 'java';
+```
+Change the fallback value (the part after `||`):
+
+| Your Language | Change to |
+|---------------|-----------|
+| Java | `'java'` ✅ already set |
+| C++ | `'cpp'` |
+| Python | `'py'` |
+| JavaScript | `'js'` |
+
+---
+
+**File 2 — `extension/popup.js` lines 38 and 41:**
+Find these two lines:
+```js
+languageSelect.value = extractedData.language || 'Java';
+// ...
+languageSelect.value = 'Java';
+```
+Change both `'Java'` values:
+
+| Your Language | Change to |
+|---------------|-----------|
+| Java | `'Java'` ✅ already set |
+| C++ | `'C++'` |
+| Python | `'Python'` |
+| JavaScript | `'JavaScript'` |
+
+After editing both files — restart the server and reload the extension in `chrome://extensions/`.
 
 ---
 
